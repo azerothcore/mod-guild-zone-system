@@ -12,18 +12,15 @@
 ### How to install
 1. Simply place the module under the `modules` folder of your AzerothCore source folder.
 2. Re-run cmake and launch a clean build of AzerothCore
-3. Navigate in `modules` open folder SQL/World and import `guildhouses.sql` & `creatures.sql` in your base.
-4. Log in game, spawn Npc ID 55005, Enjoy.
+3. Navigate to `modules`, open folder SQL/World and import `guildhouses.sql` & `creatures.sql` in your base.
+4. Log in game, spawn Npc ID 55005.
 
 ### Usage
 - Enable this module and talk with the assigned creature :D
 
-### Showcase / Video 
-- Soon
-
-
 ## Credits
-* [Poszer](https://github.com/Poszer): (Author of the module): 
+* Bloodication: (Original author *probably*): 
+* Poszer: (Port to a module): 
 
 AzerothCore: [repository](https://github.com/azerothcore) - [website](http://azerothcore.org/) - [discord chat community](https://discord.gg/PaqQRkd)
-- Latest build status with azerothcore: [![Build Status](https://travis-ci.org/azerothcore/mod-guildhouse-system.svg?branch=master)](https://travis-ci.org/azerothcore/mod-guildhouse-system)
+<!-- - Latest build status with azerothcore: [![Build Status](https://travis-ci.org/azerothcore/mod-guildhouse-system.svg?branch=master)](https://travis-ci.org/azerothcore/mod-guildhouse-system) -->
