@@ -1,22 +1,3 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.3.10-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Version:             9.5.0.5196
--- --------------------------------------------------------
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-
-
--- Dumping database structure for world
-CREATE DATABASE IF NOT EXISTS `world` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `world`;
-
--- Dumping structure for table world.guildhouses
 CREATE TABLE IF NOT EXISTS `guildhouses` (
   `id` int(8) unsigned NOT NULL AUTO_INCREMENT,
   `guildid` bigint(20) NOT NULL DEFAULT 0,
@@ -28,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `guildhouses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8 COMMENT='Guild House System';
 
--- Dumping data for table world.guildhouses: ~37 rows (approximately)
 /*!40000 ALTER TABLE `guildhouses` DISABLE KEYS */;
 INSERT INTO `guildhouses` (`id`, `guildid`, `x`, `y`, `z`, `map`, `comment`) VALUES
 	(1, 0, 16222, 16266, 14.2, 1, 'GM Island'),
@@ -69,7 +49,3 @@ INSERT INTO `guildhouses` (`id`, `guildid`, `x`, `y`, `z`, `map`, `comment`) VAL
 	(39, 0, -483.401794, 7461.944824, 186.120987, 530, 'Outland Nagrand: Challe\'s Home for Little Tykes'),
 	(40, 0, 2387.753906, 3191.757324, 152.669388, 530, 'Outland Netherstorm: Nova\'s Shrine');
 /*!40000 ALTER TABLE `guildhouses` ENABLE KEYS */;
-
-/*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
-/*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
