@@ -156,7 +156,7 @@ public:
         {
             //show how much money player need to buy GH (in gold)
             char msg[100];
-            sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY, false);
+            sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY);
             _creature->MonsterWhisper(msg, player);
             return;
         }
@@ -192,7 +192,7 @@ public:
                 player->GetGuildId());
             player->ModifyMoney(5000000);
             char msg[100];
-            sprintf(msg, MSG_SOLD, true);
+            sprintf(msg, MSG_SOLD);
             _creature->MonsterWhisper(msg, player);
         }
     }
