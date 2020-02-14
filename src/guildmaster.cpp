@@ -1,3 +1,4 @@
+#include "Player.h"
 #include "ScriptMgr.h"
 #include "World.h"
 #include "DatabaseEnv.h"
