@@ -1,7 +1,7 @@
 # ![logo](https://raw.githubusercontent.com/azerothcore/azerothcore.github.io/master/images/logo-github.png) AzerothCore
-# mod-guild-zone-system
+## mod-guild-zone-system
 ### This is a module for [AzerothCore](http://www.azerothcore.org)
-
+- Latest build status with azerothcore: [![Build Status](https://github.com/azerothcore/mod-guild-zone-system/workflows/core-build/badge.svg?branch=master&event=push)](https://github.com/azerothcore/mod-guild-zone-system)
 
 ### Features:
 - Allows Guild Masters to Purchase/Sell Zones.
