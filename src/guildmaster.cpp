@@ -104,23 +104,23 @@ public:
                 comment = fields[1].GetString();
                 //send comment as a gossip item
                 //transmit guildhouseId in Action variable
-                player->ADD_GOSSIP_ITEM(ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
+                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
             } while (result->NextRow());
 
             if (result->GetRowCount() == GOSSIP_COUNT_MAX)
             {
                 //assume that we have additional page
                 //add link to next GOSSIP_COUNT_MAX items
-                player->ADD_GOSSIP_ITEM(ICON_GOSSIP_BALOONDOTS, MSG_GOSSIP_NEXTPAGE, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_SHOWBUY_FROM);
+                AddGossipItemFor(player, ICON_GOSSIP_BALOONDOTS, MSG_GOSSIP_NEXTPAGE, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_SHOWBUY_FROM);
             }
-            player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+            SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
             return true;
         }
         else if (!result)
         {
             //all guildhouses are occupied
             _creature->MonsterWhisper(MSG_NOFREEGH, player);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
         }
         else
             //this condition occurs when COUNT(guildhouses) % GOSSIP_COUNT_MAX == 0
@@ -206,7 +206,7 @@ public:
         switch (action)
         {
         case ACTION_TELE:
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             teleportPlayerToGuildHouse(player, _creature);
             break;
         case ACTION_SHOW_BUYLIST:
@@ -214,7 +214,7 @@ public:
             break;
         case ACTION_SELL_GUILDHOUSE:
             sellGuildhouse(player, _creature);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             break;
         default:
             if (action > OFFSET_SHOWBUY_FROM)
@@ -223,7 +223,7 @@ public:
             }
             else if (action > OFFSET_GH_ID_TO_ACTION)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 buyGuildhouse(player, _creature, action - OFFSET_GH_ID_TO_ACTION);
             }
             break;
@@ -236,24 +236,24 @@ public:
         if (player->GetGuildId() == 0)
         {
             _creature->MonsterWhisper(MSG_NOTINGUILD, player);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
-        player->ADD_GOSSIP_ITEM(ICON_GOSSIP_BALOON, MSG_GOSSIP_TELE, GOSSIP_SENDER_MAIN, ACTION_TELE);
+        AddGossipItemFor(player, ICON_GOSSIP_BALOON, MSG_GOSSIP_TELE, GOSSIP_SENDER_MAIN, ACTION_TELE);
 
         if (isPlayerGuildLeader(player))
         {
             if (isPlayerHasGuildhouse(player, _creature))
             {
-                player->ADD_GOSSIP_ITEM_EXTENDED(ICON_GOSSIP_GOLD, MSG_GOSSIP_SELL, GOSSIP_SENDER_MAIN, ACTION_SELL_GUILDHOUSE, MSG_SELL_CONFIRM, 0, false);
+                AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_SELL, GOSSIP_SENDER_MAIN, ACTION_SELL_GUILDHOUSE, MSG_SELL_CONFIRM, 0, false);
             }
             else
             {
-                player->ADD_GOSSIP_ITEM(ICON_GOSSIP_GOLD, MSG_GOSSIP_BUY, GOSSIP_SENDER_MAIN, ACTION_SHOW_BUYLIST);
+                AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_BUY, GOSSIP_SENDER_MAIN, ACTION_SHOW_BUYLIST);
             }
         }
 
-        player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
+        SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
         return true;
     }
 };
