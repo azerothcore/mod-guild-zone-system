@@ -74,7 +74,7 @@ public:
     {
         if (player->IsInCombat()) //don't allow teleporting while in combat
         {
-            _creature->MonsterWhisper(MSG_INCOMBAT, player);
+            _creature->Whisper(MSG_INCOMBAT, LANG_UNIVERSAL, player);
             return;
         }
 
@@ -84,7 +84,7 @@ public:
         if (getGuildHouseCoords(player->GetGuildId(), x, y, z, map))
             player->TeleportTo(map, x, y, z, 0.0f);
         else
-            _creature->MonsterWhisper(MSG_NOGUILDHOUSE, player);
+            _creature->Whisper(MSG_NOGUILDHOUSE, LANG_UNIVERSAL, player);
     }
 
     bool showBuyList(Player *player, Creature *_creature, uint32 showFromId = 0)
@@ -119,7 +119,7 @@ public:
         else if (!result)
         {
             //all guildhouses are occupied
-            _creature->MonsterWhisper(MSG_NOFREEGH, player);
+            _creature->Whisper(MSG_NOFREEGH, LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else
@@ -142,7 +142,7 @@ public:
                 Field *fields = result->Fetch();
                 char msg[100];
                 sprintf(msg, MSG_ALREADYHAVEGH, fields[0].GetCString());
-                _creature->MonsterWhisper(msg, player);
+                _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
             return true;
         }
@@ -157,7 +157,7 @@ public:
             //show how much money player need to buy GH (in gold)
             char msg[100];
             sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY);
-            _creature->MonsterWhisper(msg, player);
+            _creature->Whisper(msg, LANG_UNIVERSAL, player);
             return;
         }
 
@@ -172,7 +172,7 @@ public:
 
         if (result)
         {
-            _creature->MonsterWhisper(MSG_GHOCCUPIED, player);
+            _creature->Whisper(MSG_GHOCCUPIED, LANG_UNIVERSAL, player);
             return;
         }
         //update DB
@@ -180,7 +180,7 @@ public:
             player->GetGuildId(), guildhouseId);
         player->ModifyMoney(-10000000);
         //player->DestroyItemCount(token, cost, true);
-        _creature->MonsterWhisper(MSG_CONGRATULATIONS, player);
+        _creature->Whisper(MSG_CONGRATULATIONS, LANG_UNIVERSAL, player);
     }
 
     void sellGuildhouse(Player *player, Creature *_creature)
@@ -193,7 +193,7 @@ public:
             player->ModifyMoney(5000000);
             char msg[100];
             sprintf(msg, MSG_SOLD);
-            _creature->MonsterWhisper(msg, player);
+            _creature->Whisper(msg, LANG_UNIVERSAL, player);
         }
     }
 
@@ -235,7 +235,7 @@ public:
     {
         if (player->GetGuildId() == 0)
         {
-            _creature->MonsterWhisper(MSG_NOTINGUILD, player);
+            _creature->Whisper(MSG_NOTINGUILD, LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return true;
         }
