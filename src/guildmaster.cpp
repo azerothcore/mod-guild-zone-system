@@ -4,7 +4,7 @@
 #include "DatabaseEnv.h"
 #include "ScriptedGossip.h"
 
-#define MSG_GOSSIP_TELE          "Teleport to GuildHouse"
+#define MSG_GOSSIP_TELE          "Teleport to GuildHouse" //Add a comment because hooray workflow
 #define MSG_GOSSIP_BUY           "Buy GuildHouse (1000 gold)"
 #define MSG_GOSSIP_SELL          "Sell GuildHouse (500 gold)"
 #define MSG_GOSSIP_NEXTPAGE      "Next -->"
