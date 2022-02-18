@@ -57,14 +57,14 @@ public:
             return false;
 
         QueryResult result;
-        result = WorldDatabase.PQuery("SELECT `x`, `y`, `z`, `map` FROM `guildhouses` WHERE `guildId` = %u", guildId);
+        result = WorldDatabase.Query("SELECT `x`, `y`, `z`, `map` FROM `guildhouses` WHERE `guildId` = %u", guildId);
         if (result)
         {
             Field *fields = result->Fetch();
-            x = fields[0].GetFloat();
-            y = fields[1].GetFloat();
-            z = fields[2].GetFloat();
-            map = fields[3].GetUInt32();
+            x = fields[0].Get<float>();
+            y = fields[1].Get<float>();
+            z = fields[2].Get<float>();
+            map = fields[3].Get<uint32>();
             return true;
         }
         return false;
@@ -91,7 +91,7 @@ public:
     {
         //show not occupied guildhouses
         QueryResult result;
-        result = WorldDatabase.PQuery("SELECT `id`, `comment` FROM `guildhouses` WHERE `guildId` = 0 AND `id` > %u ORDER BY `id` ASC LIMIT %u", showFromId, GOSSIP_COUNT_MAX);
+        result = WorldDatabase.Query("SELECT `id`, `comment` FROM `guildhouses` WHERE `guildId` = 0 AND `id` > %u ORDER BY `id` ASC LIMIT %u", showFromId, GOSSIP_COUNT_MAX);
 
         if (result)
         {
@@ -100,8 +100,8 @@ public:
             do
             {
                 Field *fields = result->Fetch();
-                guildhouseId = fields[0].GetInt32();
-                comment = fields[1].GetString();
+                guildhouseId = fields[0].Get<int32>();
+                comment = fields[1].Get<std::string>();
                 //send comment as a gossip item
                 //transmit guildhouseId in Action variable
                 AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
@@ -132,7 +132,7 @@ public:
     bool isPlayerHasGuildhouse(Player *player, Creature *_creature, bool whisper = false)
     {
         QueryResult result;
-        result = WorldDatabase.PQuery("SELECT `comment` FROM `guildhouses` WHERE `guildId` = %u",
+        result = WorldDatabase.Query("SELECT `comment` FROM `guildhouses` WHERE `guildId` = %u",
             player->GetGuildId());
 
         if (result)
@@ -141,7 +141,7 @@ public:
             {
                 Field *fields = result->Fetch();
                 char msg[100];
-                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].GetCString());
+                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].Get<std::string>());
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
             return true;
@@ -168,7 +168,7 @@ public:
 
         QueryResult result;
         //check if somebody already occupied this GH
-        result = WorldDatabase.PQuery("SELECT `id` FROM `guildhouses` WHERE `id` = %u AND `guildId` <> 0", guildhouseId);
+        result = WorldDatabase.Query("SELECT `id` FROM `guildhouses` WHERE `id` = %u AND `guildId` <> 0", guildhouseId);
 
         if (result)
         {
@@ -176,7 +176,7 @@ public:
             return;
         }
         //update DB
-        result = WorldDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = %u WHERE `id` = %u",
+        result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = %u WHERE `id` = %u",
             player->GetGuildId(), guildhouseId);
         player->ModifyMoney(-10000000);
         //player->DestroyItemCount(token, cost, true);
@@ -188,7 +188,7 @@ public:
         if (isPlayerHasGuildhouse(player, _creature))
         {
             QueryResult result;
-            result = WorldDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = %u",
+            result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = %u",
                 player->GetGuildId());
             player->ModifyMoney(5000000);
             char msg[100];
