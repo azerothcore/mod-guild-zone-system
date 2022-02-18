@@ -32,7 +32,7 @@ To remove the SQL, use these queries in the `world` database:
 DELETE FROM `creature_template` WHERE entry=55005;
 
 -- All creatures for guild houses --
-DELETE FROM `creature` WHERE id=55005;
+DELETE FROM `creature` WHERE id1=55005;
 
 DROP TABLE `guildhouses`;
 ```
