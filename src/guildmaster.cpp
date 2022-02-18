@@ -11,11 +11,8 @@
 #define MSG_INCOMBAT             "You are in combat and cannot be teleported to your GuildHouse."
 #define MSG_NOGUILDHOUSE         "Your guild currently does not own a GuildHouse."
 #define MSG_NOFREEGH             "Unfortunately, all GuildHouses are in use."
-#define MSG_ALREADYHAVEGH        "Sorry, but you already own a GuildHouse (%s)."
-#define MSG_NOTENOUGHMONEY       "You do not have the %u gold required to purchase a GuildHouse."
 #define MSG_GHOCCUPIED           "This GuildHouse is unavailable for purchase as it is currently in use."
 #define MSG_CONGRATULATIONS      "Congratulations! You have successfully purchased a GuildHouse."
-#define MSG_SOLD                 "You have sold your GuildHouse and have received 500 gold."
 #define MSG_NOTINGUILD           "You need to be in a guild before you can use a GuildHouse."
 #define MSG_SELL_CONFIRM         "Are you sure you want to sell your guildhouse for half the buy price?"
 
@@ -104,7 +101,7 @@ public:
                 comment = fields[1].Get<std::string>();
                 //send comment as a gossip item
                 //transmit guildhouseId in Action variable
-                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment.c_str(), GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
+                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
             } while (result->NextRow());
 
             if (result->GetRowCount() == GOSSIP_COUNT_MAX)
@@ -141,7 +138,7 @@ public:
             {
                 Field *fields = result->Fetch();
                 char msg[100];
-                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].Get<std::string>());
+                sprintf(msg, "Sorry, but you already own a GuildHouse (%s).", fields[0].Get<std::string>());
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
             return true;
@@ -156,7 +153,7 @@ public:
         {
             //show how much money player need to buy GH (in gold)
             char msg[100];
-            sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY);
+            sprintf(msg, "You do not have the %u gold required to purchase a GuildHouse.", COST_GH_BUY);
             _creature->Whisper(msg, LANG_UNIVERSAL, player);
             return;
         }
@@ -192,7 +189,7 @@ public:
                 player->GetGuildId());
             player->ModifyMoney(5000000);
             char msg[100];
-            sprintf(msg, MSG_SOLD);
+            sprintf(msg, "You have sold your GuildHouse and have received 500 gold.");
             _creature->Whisper(msg, LANG_UNIVERSAL, player);
         }
     }
