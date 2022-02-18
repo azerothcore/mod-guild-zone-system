@@ -4,6 +4,8 @@
 #include "DatabaseEnv.h"
 #include "ScriptedGossip.h"
 
+#define COST_GH_BUY 1000 //1000 g.
+#define COST_GH_SELL 500 //500 g.
 #define MSG_GOSSIP_TELE          "Teleport to GuildHouse"
 #define MSG_GOSSIP_BUY           "Buy GuildHouse (1000 gold)"
 #define MSG_GOSSIP_SELL          "Sell GuildHouse (500 gold)"
@@ -12,7 +14,7 @@
 #define MSG_NOGUILDHOUSE         "Your guild currently does not own a GuildHouse."
 #define MSG_NOFREEGH             "Unfortunately, all GuildHouses are in use."
 #define MSG_ALREADYHAVEGH        "Sorry, but you already own a GuildHouse (%s)."
-#define MSG_NOTENOUGHMONEY       "You do not have the {} gold required to purchase a GuildHouse."
+#define MSG_NOTENOUGHMONEY       "You do not have the 1000 gold required to purchase a GuildHouse."
 #define MSG_GHOCCUPIED           "This GuildHouse is unavailable for purchase as it is currently in use."
 #define MSG_CONGRATULATIONS      "Congratulations! You have successfully purchased a GuildHouse."
 #define MSG_SOLD                 "You have sold your GuildHouse and have received 500 gold."
@@ -35,9 +37,6 @@
 #define ICON_GOSSIP_BALOONDOTS 7
 #define ICON_GOSSIP_TABARD 8
 #define ICON_GOSSIP_XSWORDS 9
-
-#define COST_GH_BUY 1000 //1000 g.
-#define COST_GH_SELL 500 //500 g.
 
 #define GOSSIP_COUNT_MAX 10
 
@@ -156,7 +155,7 @@ public:
         {
             //show how much money player need to buy GH (in gold)
             char msg[100];
-            sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY);
+            sprintf(msg, MSG_NOTENOUGHMONEY);
             _creature->Whisper(msg, LANG_UNIVERSAL, player);
             return;
         }
