@@ -54,7 +54,7 @@ public:
             return false;
 
         QueryResult result;
-        result = WorldDatabase.Query("SELECT `x`, `y`, `z`, `map` FROM `guildhouses` WHERE `guildId` = %u", guildId);
+        result = WorldDatabase.Query("SELECT `x`, `y`, `z`, `map` FROM `guildhouses` WHERE `guildId` = {}", guildId);
         if (result)
         {
             Field *fields = result->Fetch();
@@ -88,7 +88,7 @@ public:
     {
         //show not occupied guildhouses
         QueryResult result;
-        result = WorldDatabase.Query("SELECT `id`, `comment` FROM `guildhouses` WHERE `guildId` = 0 AND `id` > %u ORDER BY `id` ASC LIMIT %u", showFromId, GOSSIP_COUNT_MAX);
+        result = WorldDatabase.Query("SELECT `id`, `comment` FROM `guildhouses` WHERE `guildId` = 0 AND `id` > {} ORDER BY `id` ASC LIMIT {}", showFromId, GOSSIP_COUNT_MAX);
 
         if (result)
         {
@@ -129,7 +129,7 @@ public:
     bool isPlayerHasGuildhouse(Player *player, Creature *_creature, bool whisper = false)
     {
         QueryResult result;
-        result = WorldDatabase.Query("SELECT `comment` FROM `guildhouses` WHERE `guildId` = %u",
+        result = WorldDatabase.Query("SELECT `comment` FROM `guildhouses` WHERE `guildId` = {}",
             player->GetGuildId());
 
         if (result)
@@ -138,7 +138,7 @@ public:
             {
                 Field *fields = result->Fetch();
                 char msg[100];
-                sprintf(msg, "Sorry, but you already own a GuildHouse (%s).", fields[0].Get<std::string>());
+                sprintf(msg, "Sorry, but you already own a GuildHouse ({}).", fields[0].Get<std::string>());
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
             return true;
@@ -153,7 +153,7 @@ public:
         {
             //show how much money player need to buy GH (in gold)
             char msg[100];
-            sprintf(msg, "You do not have the %u gold required to purchase a GuildHouse.", COST_GH_BUY);
+            sprintf(msg, "You do not have the {} gold required to purchase a GuildHouse.", COST_GH_BUY);
             _creature->Whisper(msg, LANG_UNIVERSAL, player);
             return;
         }
@@ -165,7 +165,7 @@ public:
 
         QueryResult result;
         //check if somebody already occupied this GH
-        result = WorldDatabase.Query("SELECT `id` FROM `guildhouses` WHERE `id` = %u AND `guildId` <> 0", guildhouseId);
+        result = WorldDatabase.Query("SELECT `id` FROM `guildhouses` WHERE `id` = {} AND `guildId` <> 0", guildhouseId);
 
         if (result)
         {
@@ -173,7 +173,7 @@ public:
             return;
         }
         //update DB
-        result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = %u WHERE `id` = %u",
+        result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = %u WHERE `id` = {}",
             player->GetGuildId(), guildhouseId);
         player->ModifyMoney(-10000000);
         //player->DestroyItemCount(token, cost, true);
@@ -185,7 +185,7 @@ public:
         if (isPlayerHasGuildhouse(player, _creature))
         {
             QueryResult result;
-            result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = %u",
+            result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = {}",
                 player->GetGuildId());
             player->ModifyMoney(5000000);
             char msg[100];
