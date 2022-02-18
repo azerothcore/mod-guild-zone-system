@@ -104,7 +104,7 @@ public:
                 comment = fields[1].Get<std::string>();
                 //send comment as a gossip item
                 //transmit guildhouseId in Action variable
-                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
+                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment.c_str(), GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
             } while (result->NextRow());
 
             if (result->GetRowCount() == GOSSIP_COUNT_MAX)
