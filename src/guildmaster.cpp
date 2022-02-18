@@ -141,7 +141,7 @@ public:
             {
                 Field *fields = result->Fetch();
                 char msg[100];
-                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].Get<std::string>());
+                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].Get<std::string>().c_str());
                 _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
             return true;
