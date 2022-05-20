@@ -4,6 +4,8 @@
 #include "DatabaseEnv.h"
 #include "ScriptedGossip.h"
 
+#define COST_GH_BUY 1000 //1000 g.
+#define COST_GH_SELL 500 //500 g.
 #define MSG_GOSSIP_TELE          "Teleport to GuildHouse"
 #define MSG_GOSSIP_BUY           "Buy GuildHouse (1000 gold)"
 #define MSG_GOSSIP_SELL          "Sell GuildHouse (500 gold)"
@@ -12,7 +14,7 @@
 #define MSG_NOGUILDHOUSE         "Your guild currently does not own a GuildHouse."
 #define MSG_NOFREEGH             "Unfortunately, all GuildHouses are in use."
 #define MSG_ALREADYHAVEGH        "Sorry, but you already own a GuildHouse (%s)."
-#define MSG_NOTENOUGHMONEY       "You do not have the %u gold required to purchase a GuildHouse."
+#define MSG_NOTENOUGHMONEY       "You do not have the 1000 gold required to purchase a GuildHouse."
 #define MSG_GHOCCUPIED           "This GuildHouse is unavailable for purchase as it is currently in use."
 #define MSG_CONGRATULATIONS      "Congratulations! You have successfully purchased a GuildHouse."
 #define MSG_SOLD                 "You have sold your GuildHouse and have received 500 gold."
@@ -36,9 +38,6 @@
 #define ICON_GOSSIP_TABARD 8
 #define ICON_GOSSIP_XSWORDS 9
 
-#define COST_GH_BUY 1000 //1000 g.
-#define COST_GH_SELL 500 //500 g.
-
 #define GOSSIP_COUNT_MAX 10
 
 class guildmaster : public CreatureScript
@@ -57,14 +56,14 @@ public:
             return false;
 
         QueryResult result;
-        result = WorldDatabase.PQuery("SELECT `x`, `y`, `z`, `map` FROM `guildhouses` WHERE `guildId` = %u", guildId);
+        result = WorldDatabase.Query("SELECT `x`, `y`, `z`, `map` FROM `guildhouses` WHERE `guildId` = {}", guildId);
         if (result)
         {
             Field *fields = result->Fetch();
-            x = fields[0].GetFloat();
-            y = fields[1].GetFloat();
-            z = fields[2].GetFloat();
-            map = fields[3].GetUInt32();
+            x = fields[0].Get<float>();
+            y = fields[1].Get<float>();
+            z = fields[2].Get<float>();
+            map = fields[3].Get<uint32>();
             return true;
         }
         return false;
@@ -74,7 +73,7 @@ public:
     {
         if (player->IsInCombat()) //don't allow teleporting while in combat
         {
-            _creature->MonsterWhisper(MSG_INCOMBAT, player);
+            _creature->Whisper(MSG_INCOMBAT, LANG_UNIVERSAL, player);
             return;
         }
 
@@ -84,14 +83,14 @@ public:
         if (getGuildHouseCoords(player->GetGuildId(), x, y, z, map))
             player->TeleportTo(map, x, y, z, 0.0f);
         else
-            _creature->MonsterWhisper(MSG_NOGUILDHOUSE, player);
+            _creature->Whisper(MSG_NOGUILDHOUSE, LANG_UNIVERSAL, player);
     }
 
     bool showBuyList(Player *player, Creature *_creature, uint32 showFromId = 0)
     {
         //show not occupied guildhouses
         QueryResult result;
-        result = WorldDatabase.PQuery("SELECT `id`, `comment` FROM `guildhouses` WHERE `guildId` = 0 AND `id` > %u ORDER BY `id` ASC LIMIT %u", showFromId, GOSSIP_COUNT_MAX);
+        result = WorldDatabase.Query("SELECT `id`, `comment` FROM `guildhouses` WHERE `guildId` = 0 AND `id` > {} ORDER BY `id` ASC LIMIT {}", showFromId, GOSSIP_COUNT_MAX);
 
         if (result)
         {
@@ -100,11 +99,11 @@ public:
             do
             {
                 Field *fields = result->Fetch();
-                guildhouseId = fields[0].GetInt32();
-                comment = fields[1].GetString();
+                guildhouseId = fields[0].Get<int32>();
+                comment = fields[1].Get<std::string>();
                 //send comment as a gossip item
                 //transmit guildhouseId in Action variable
-                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment, GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
+                AddGossipItemFor(player, ICON_GOSSIP_TABARD, comment.c_str(), GOSSIP_SENDER_MAIN, guildhouseId + OFFSET_GH_ID_TO_ACTION);
             } while (result->NextRow());
 
             if (result->GetRowCount() == GOSSIP_COUNT_MAX)
@@ -119,7 +118,7 @@ public:
         else if (!result)
         {
             //all guildhouses are occupied
-            _creature->MonsterWhisper(MSG_NOFREEGH, player);
+            _creature->Whisper(MSG_NOFREEGH, LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
         }
         else
@@ -132,7 +131,7 @@ public:
     bool isPlayerHasGuildhouse(Player *player, Creature *_creature, bool whisper = false)
     {
         QueryResult result;
-        result = WorldDatabase.PQuery("SELECT `comment` FROM `guildhouses` WHERE `guildId` = %u",
+        result = WorldDatabase.Query("SELECT `comment` FROM `guildhouses` WHERE `guildId` = {}",
             player->GetGuildId());
 
         if (result)
@@ -141,8 +140,8 @@ public:
             {
                 Field *fields = result->Fetch();
                 char msg[100];
-                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].GetCString());
-                _creature->MonsterWhisper(msg, player);
+                sprintf(msg, MSG_ALREADYHAVEGH, fields[0].Get<std::string>().c_str());
+                _creature->Whisper(msg, LANG_UNIVERSAL, player);
             }
             return true;
         }
@@ -156,8 +155,8 @@ public:
         {
             //show how much money player need to buy GH (in gold)
             char msg[100];
-            sprintf(msg, MSG_NOTENOUGHMONEY, COST_GH_BUY);
-            _creature->MonsterWhisper(msg, player);
+            sprintf(msg, MSG_NOTENOUGHMONEY);
+            _creature->Whisper(msg, LANG_UNIVERSAL, player);
             return;
         }
 
@@ -168,19 +167,19 @@ public:
 
         QueryResult result;
         //check if somebody already occupied this GH
-        result = WorldDatabase.PQuery("SELECT `id` FROM `guildhouses` WHERE `id` = %u AND `guildId` <> 0", guildhouseId);
+        result = WorldDatabase.Query("SELECT `id` FROM `guildhouses` WHERE `id` = {} AND `guildId` <> 0", guildhouseId);
 
         if (result)
         {
-            _creature->MonsterWhisper(MSG_GHOCCUPIED, player);
+            _creature->Whisper(MSG_GHOCCUPIED, LANG_UNIVERSAL, player);
             return;
         }
         //update DB
-        result = WorldDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = %u WHERE `id` = %u",
+        result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = {} WHERE `id` = {}",
             player->GetGuildId(), guildhouseId);
         player->ModifyMoney(-10000000);
         //player->DestroyItemCount(token, cost, true);
-        _creature->MonsterWhisper(MSG_CONGRATULATIONS, player);
+        _creature->Whisper(MSG_CONGRATULATIONS, LANG_UNIVERSAL, player);
     }
 
     void sellGuildhouse(Player *player, Creature *_creature)
@@ -188,12 +187,12 @@ public:
         if (isPlayerHasGuildhouse(player, _creature))
         {
             QueryResult result;
-            result = WorldDatabase.PQuery("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = %u",
+            result = WorldDatabase.Query("UPDATE `guildhouses` SET `guildId` = 0 WHERE `guildId` = {}",
                 player->GetGuildId());
             player->ModifyMoney(5000000);
             char msg[100];
             sprintf(msg, MSG_SOLD);
-            _creature->MonsterWhisper(msg, player);
+            _creature->Whisper(msg, LANG_UNIVERSAL, player);
         }
     }
 
@@ -235,7 +234,7 @@ public:
     {
         if (player->GetGuildId() == 0)
         {
-            _creature->MonsterWhisper(MSG_NOTINGUILD, player);
+            _creature->Whisper(MSG_NOTINGUILD, LANG_UNIVERSAL, player);
             CloseGossipMenuFor(player);
             return true;
         }
