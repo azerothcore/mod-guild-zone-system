@@ -1,8 +1,8 @@
+#include "DatabaseEnv.h"
 #include "Player.h"
+#include "ScriptedGossip.h"
 #include "ScriptMgr.h"
 #include "World.h"
-#include "DatabaseEnv.h"
-#include "ScriptedGossip.h"
 
 #define COST_GH_BUY 1000 //1000 g.
 #define COST_GH_SELL 500 //500 g.
@@ -161,9 +161,7 @@ public:
         }
 
         if (isPlayerHasGuildhouse(player, _creature, true))
-        {
             return;
-        }
 
         QueryResult result;
         //check if somebody already occupied this GH
@@ -217,9 +215,7 @@ public:
             break;
         default:
             if (action > OFFSET_SHOWBUY_FROM)
-            {
                 showBuyList(player, _creature, action - OFFSET_SHOWBUY_FROM);
-            }
             else if (action > OFFSET_GH_ID_TO_ACTION)
             {
                 CloseGossipMenuFor(player);
@@ -243,13 +239,9 @@ public:
         if (isPlayerGuildLeader(player))
         {
             if (isPlayerHasGuildhouse(player, _creature))
-            {
                 AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_SELL, GOSSIP_SENDER_MAIN, ACTION_SELL_GUILDHOUSE, MSG_SELL_CONFIRM, 0, false);
-            }
             else
-            {
                 AddGossipItemFor(player, ICON_GOSSIP_GOLD, MSG_GOSSIP_BUY, GOSSIP_SENDER_MAIN, ACTION_SHOW_BUYLIST);
-            }
         }
 
         SendGossipMenuFor(player, DEFAULT_GOSSIP_MESSAGE, _creature->GetGUID());
